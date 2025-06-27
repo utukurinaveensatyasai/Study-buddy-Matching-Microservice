@@ -1,47 +1,51 @@
 # 📚 Study Buddy Matching Microservice
 
-A lightweight Python-based microservice that recommends a compatible study buddy based on academic goals, study preferences, and personality traits — fully offline and explainable.
+A lightweight, offline-ready Python-based microservice that intelligently recommends compatible study partners based on academic goals, study preferences, and personality traits. Built with FastAPI, configurable via JSON, and containerized for deployment anywhere.
 
 ---
 
-## 🚀 Features
+## 🚀 Key Features
 
-- 🔍 **Deterministic Offline Matching**
-- 🧠 Hybrid Scoring (Goals, Study Time, Study Type, Personality)
-- 📊 Normalized Match Score (0–1)
-- ⚙️ Configurable Logic via `config.json`
-- 🧪 FastAPI-based REST API with test coverage
-- 🐳 Fully Dockerized and Portable
+- 🔍 **Offline, Deterministic Matching Engine**
+- 🧠 **Hybrid Scoring Algorithm** combining:
+  - Academic Goals
+  - Preferred Study Time
+  - Study Type
+  - Personality Trait Overlap
+- 📊 **Normalized Match Score** between 0.0 and 1.0
+- ⚙️ **Fully Configurable** via `config.json`
+- 📡 RESTful API with **FastAPI** + OpenAPI Docs
+- 🧪 Robust Unit Tests with `pytest`
+- 🐳 Dockerized for easy deployment
 
 ---
 
-## 📦 Project Structure
+## 📁 Project Structure
 
+```
 study-buddy/
 ├── app/
-│ ├── main.py # FastAPI server
-│ └── matcher.py # Matching logic
+│   ├── main.py              # FastAPI server and endpoints
+│   └── matcher.py           # Core matching logic
 ├── data/
-│ └── students.json # Offline candidate dataset
+│   └── students.json        # Offline dataset of student profiles
 ├── tests/
-│ └── test_match.py # Unit tests
-├── config.json # Thresholds and weights
-├── Dockerfile # For containerization
-├── requirements.txt # Python dependencies
-├── schema.json # Output validation schema
-└── README.md
-
+│   └── test_match.py        # Unit and performance tests
+├── config.json              # Configurable weights and thresholds
+├── requirements.txt         # Python dependencies
+├── Dockerfile               # Docker build file
+├── schema.json              # Optional output validation schema
+└── README.md                # Project documentation
+```
 
 ---
 
-## 📥 API Usage
+## 🌐 API Endpoints
 
-### ➤ POST `/match`
+### 🔎 `POST /match`
+Find the best-matching study buddy for a student.
 
-Find the best matching study buddy.
-
-#### ✅ Request Payload
-
+#### ✅ Request Payload:
 ```json
 {
   "student_id": "stu_9482",
@@ -50,34 +54,57 @@ Find the best matching study buddy.
   "study_type": "visual",
   "personality": ["focused", "introvert"]
 }
+```
 
-➤ GET /health
-Check service health.
+#### ✅ Response:
+```json
+{
+  "matched_student_id": "stu_4312",
+  "match_score": 0.84,
+  "reasoning": {
+    "goal_similarity": 0.9,
+    "study_time_match": true,
+    "study_type_match": false,
+    "personality_overlap": ["focused"]
+  }
+}
+```
+
+---
+
+### 🩺 `GET /health`
+Check if the service is running.
+
+```json
 { "status": "ok" }
+```
 
-➤ GET /version
-Returns config version and minimum score.
+---
 
-🛠️ Setup & Run
-🔧 Without Docker
-pip install -r requirements.txt
-uvicorn app.main:app --reload
+### 🧪 `GET /version`
+Returns API version and current matching configuration.
 
-Access the server at: http://localhost:8000
+```json
+{
+  "version": "1.0.0",
+  "config": {
+    "minimum_match_score": 0.6,
+    "boost_goal_match": 1.5,
+    "personality_weight": 1.0,
+    "study_time_weight": 1.2,
+    "study_type_weight": 1.0,
+    "log_match_details": true
+  }
+}
+```
 
-🐳 With Docker
+---
 
-docker build -t study-buddy .
-docker run -p 8000:8000 study-buddy
+## ⚙️ Configuration: `config.json`
 
-✅ Running Tests
+All scoring parameters are centrally configurable:
 
-pytest tests/
-
-⚙️ Config (config.json)
-Controls matching weights and thresholds:
-
-
+```json
 {
   "version": "1.0.0",
   "minimum_match_score": 0.6,
@@ -87,25 +114,84 @@ Controls matching weights and thresholds:
   "study_type_weight": 1.0,
   "log_match_details": true
 }
-📌 Constraints
-No GPT, external API, or vector embeddings
+```
 
-All logic must be local
-
-Must return scores between 0–1
-
-Schema-compliant output with full explanation
-
-👨‍💻 Author
-Utukuri Naveen Satya Sai
-Intern at Turtil AI, Hyderabad 🧠
-
-📚 License
-MIT License — free to use and modify.
-
+Update these values to fine-tune your matching logic without changing any code.
 
 ---
 
-✅ You're now fully set to run your project end-to-end.
+## 🛠️ Setup & Run
 
-Would you like a **zip folder of everything**, or are you ready to test the code locally and let me know if you encounter any issues?
+### 🔧 Local Development (without Docker)
+```bash
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
+
+Access the app at: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+---
+
+### 🐳 Docker Deployment
+
+Build and run the containerized app:
+```bash
+docker build -t study-buddy .
+docker run -p 8000:8000 study-buddy
+```
+
+---
+
+## ✅ Testing the Application
+
+Run the full test suite: Ensure on another cmd tab the uvicorn must be run and then on another tab run below for testing 1000 students.
+```bash
+python -m tests.test_match
+```
+or
+
+
+
+✔️ Validates response structure, matching logic, and performance for 1000 students.
+
+---
+
+## 📌 Project Constraints
+
+- ❌ No usage of GPT or online APIs
+- ⚙️ All logic runs locally using `matcher.py`
+- 🔒 Schema-compliant output with explanation
+- ⚡ Designed to handle 1000 matches under 1 second each
+
+---
+
+## 📚 Author Info
+
+**👤 Utukuri Naveen Satya Sai**  
+AI Intern at Turtil, Hyderabad  
+📧 22a31a1263@pragati.ac.in
+
+Team Name: **Continuum Craft**  
+Partner: **U. Guna Shekar**  
+College: LIET
+
+---
+
+## 📝 License
+
+This project is licensed under the [MIT License](LICENSE) — free to use, modify, and distribute.
+
+---
+
+## 📎 Final Submission Checklist
+
+✅ Fully working offline matcher  
+✅ 1000-student dataset with config  
+✅ API tested and documented  
+✅ Dockerized deployment  
+✅ Report PDF + Explainer video  
+✅ Submission zipped with all assets
+
+---
+
+**🚀 Ready to be evaluated for real-world scalability and software engineering standards.**
