@@ -1,0 +1,9 @@
+{
+  "version": "1.0.0",
+  "minimum_match_score": 0.6,
+  "boost_goal_match": 1.5,
+  "personality_weight": 1.0,
+  "study_time_weight": 1.2,
+  "study_type_weight": 1.0,
+  "log_match_details": true
+}

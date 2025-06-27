@@ -1,0 +1,30 @@
+{
+  "title": "Study Buddy Match Response Schema",
+  "type": "object",
+  "properties": {
+    "matched_student_id": {
+      "type": ["string", "null"],
+      "description": "ID of best matched buddy"
+    },
+    "match_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Total match score (0–1)"
+    },
+    "reasoning": {
+      "type": "object",
+      "properties": {
+        "goal_similarity": { "type": "number" },
+        "study_time_match": { "type": "boolean" },
+        "study_type_match": { "type": "boolean" },
+        "personality_overlap": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["goal_similarity", "study_time_match", "study_type_match", "personality_overlap"]
+    }
+  },
+  "required": ["matched_student_id", "match_score", "reasoning"]
+}
